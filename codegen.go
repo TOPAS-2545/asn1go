@@ -267,17 +267,17 @@ func (ctx *moduleContext) generateTypeBody(typeDescr Type, isSet *bool) goast.Ex
 	case RestrictedStringType: // TODO should generate checking code?
 		return goast.NewIdent("string")
 	case BitStringType:
-		ctx.requireModule("encoding/asn1")
-		return goast.NewIdent("asn1.BitString")
+		ctx.requireModule("github.com/markretallack/ber")
+		return goast.NewIdent("ber.BitString")
 	case EnumeratedType:
 		// TODO: generate consts
-		ctx.requireModule("encoding/asn1")
-		return goast.NewIdent("asn1.Enumerated")
+		ctx.requireModule("github.com/markretallack/ber")
+		return goast.NewIdent("ber.Enumerated")
 	case AnyType:
 		return &goast.InterfaceType{Methods: &goast.FieldList{}}
 	case ObjectIdentifierType:
-		ctx.requireModule("encoding/asn1")
-		return goast.NewIdent("asn1.ObjectIdentifier")
+		ctx.requireModule("github.com/markretallack/ber")
+		return goast.NewIdent("ber.ObjectIdentifier")
 	case ChoiceType:
 		return ctx.generateChoiceType(t, isSet)
 	default:
@@ -336,7 +336,7 @@ func numberToExpr(val Number, repr IntegerRepr) goast.Expr {
 
 func (ctx *moduleContext) generateChoiceType(t ChoiceType, isSet *bool) goast.Expr {
 	if ctx.hasTaggedAlternatives(t) {
-		return goast.NewIdent("asn1.RawValue")
+		return goast.NewIdent("ber.RawValue")
 	}
 	if len(t.AlternativeTypeList) == 1 {
 		return ctx.generateTypeBody(t.AlternativeTypeList[0].Type, isSet) // optimization for X.509 edge case
@@ -496,8 +496,8 @@ func (ctx *moduleContext) generateSpecialCase(resolved TypeAssignment) goast.Exp
 		ctx.requireModule("time")
 		return goast.NewIdent("time.Time")
 	} else if _, ok := ctx.removeWrapperTypes(resolved.Type).(BitStringType); ok {
-		ctx.requireModule("encoding/asn1")
-		return goast.NewIdent("asn1.BitString")
+		ctx.requireModule("github.com/markretallack/ber")
+		return goast.NewIdent("ber.BitString")
 	}
 	return nil
 }
