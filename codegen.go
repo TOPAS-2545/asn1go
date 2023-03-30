@@ -267,16 +267,16 @@ func (ctx *moduleContext) generateTypeBody(typeDescr Type, isSet *bool) goast.Ex
 	case RestrictedStringType: // TODO should generate checking code?
 		return goast.NewIdent("string")
 	case BitStringType:
-		ctx.requireModule("github.com/markretallack/ber")
+		ctx.requireModule("github.com/TOPAS-2545/ber")
 		return goast.NewIdent("ber.BitString")
 	case EnumeratedType:
 		// TODO: generate consts
-		ctx.requireModule("github.com/markretallack/ber")
+		ctx.requireModule("github.com/TOPAS-2545/ber")
 		return goast.NewIdent("ber.Enumerated")
 	case AnyType:
 		return &goast.InterfaceType{Methods: &goast.FieldList{}}
 	case ObjectIdentifierType:
-		ctx.requireModule("github.com/markretallack/ber")
+		ctx.requireModule("github.com/TOPAS-2545/ber")
 		return goast.NewIdent("ber.ObjectIdentifier")
 	case ChoiceType:
 		return ctx.generateChoiceType(t, isSet)
@@ -496,7 +496,7 @@ func (ctx *moduleContext) generateSpecialCase(resolved TypeAssignment) goast.Exp
 		ctx.requireModule("time")
 		return goast.NewIdent("time.Time")
 	} else if _, ok := ctx.removeWrapperTypes(resolved.Type).(BitStringType); ok {
-		ctx.requireModule("github.com/markretallack/ber")
+		ctx.requireModule("github.com/TOPAS-2545/ber")
 		return goast.NewIdent("ber.BitString")
 	}
 	return nil
